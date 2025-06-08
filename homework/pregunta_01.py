@@ -3,7 +3,7 @@ Escriba el codigo que ejecute la accion solicitada en cada pregunta.
 """
 
 # pylint: disable=import-outside-toplevel
-from homework.utils import open_file_lines, clean_text, create_dataframe
+from homework.utils import open_file_lines, found_header_line, define_rows, clean_text_column, create_dataframe
 
 def pregunta_01():
     """
@@ -18,8 +18,22 @@ def pregunta_01():
 
 
     """
+    # Leer el archivo de texto
     lines = open_file_lines('files/input/clusters_report.txt')
-    data = clean_text(lines)
+
+    # Encontrar la línea donde empiezan los datos (después de los encabezados)
+    header_line = found_header_line(lines, '---')
+  
+    # Procesar y definir las filas del dataframe
+    data = define_rows(
+        lines[header_line:],
+        number_of_columns=4,
+        separator_pattern=r'\s{2,}',
+        row_start_pattern=r'^\s*\d+'
+    )
+    
+    # Limpiar la columna de palabras clave
+    data = clean_text_column(data, column_index=-1)
 
     columnas = [
         'cluster',
